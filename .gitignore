@@ -1,2 +1,4 @@
 /target
 /Cargo.lock
+precompiles.h
+precomp
