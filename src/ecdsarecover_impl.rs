@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 pub fn ecdsarecover(hash: &[u8; 32], r: &[u8; 32], s: &[u8; 32], v: u8, result: &mut [u8; 32]) {
     // only 0 and 1 v values are valid
     if v > 1 {

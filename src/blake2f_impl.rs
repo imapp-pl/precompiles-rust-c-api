@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 pub fn blake2f(input_data: &[u8; 213], result: &mut [u8; 64]) {
     let f = match input_data[212] {
         1 => true,
