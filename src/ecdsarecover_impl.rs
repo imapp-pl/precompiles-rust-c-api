@@ -21,20 +21,25 @@ mod algo {
         ecdsa::{RecoverableSignature, RecoveryId},
         Message, Secp256k1,
     };
-    use sha3::{Digest, Keccak256};
+    use tiny_keccak::{Hasher, Keccak};
 
-    pub fn ecdsarecover(sig: &[u8; 64], v: u8, msg: &[u8; 32]) -> Result<[u8; 32], secp256k1::Error> {
-        let sig =
-            RecoverableSignature::from_compact(&sig[0..64], RecoveryId::from_i32(v as i32)?)?;
+    pub fn ecdsarecover(sig: &[u8; 64], v: u8, hash: &[u8; 32]) -> Result<[u8; 32], secp256k1::Error> {
+        let sig = RecoverableSignature::from_compact(&sig[..], RecoveryId::from_i32(v as i32)?)?;
 
         let secp = Secp256k1::new();
-        let public = secp.recover_ecdsa(&Message::from_slice(&msg[..32])?, &sig)?;
+        let key = secp.recover_ecdsa(&Message::from_slice(&hash[..])?, &sig)?;
 
-        let hash = Keccak256::digest(&public.serialize_uncompressed()[1..]);
-        let mut hash: [u8; 32] = hash[..].try_into().unwrap();
+        let mut key_hash = [0u8; 32];
+        let mut keccak = Keccak::v256();
+        keccak.update(&key.serialize_uncompressed()[1..65]);
+        keccak.finalize(&mut key_hash);
+        key_hash.iter_mut().take(12).for_each(|i| *i = 0);
 
-        // erasing first 12 bytes
-        hash.iter_mut().take(12).for_each(|i| *i = 0);
-        Ok(hash)
+        Ok(key_hash)
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
 }

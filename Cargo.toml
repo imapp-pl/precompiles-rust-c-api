@@ -9,6 +9,5 @@ crate-type = ["cdylib"]
 [dependencies]
 ripemd = { version = "0.1", default-features = false }
 sha2 = { version = "0.10.5", default-features = false }
-sha3 = { version = "0.10.4", default-features = false }
-k256 = { version = "0.11", default-features = false, features = ["ecdsa", "keccak256"] }
+tiny-keccak = { version = "2.0.2", features = ["keccak"] }
 secp256k1 = { version = "0.24.0", default-features = false, features = ["alloc", "recovery"] }
